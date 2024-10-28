@@ -1,38 +1,51 @@
-import os
+import pygame
 
-def initialize_board():
-    board = [[0 for _ in range(8)] for _ in range(8)]
-    return board
+pygame.init()
+screen = pygame.display.set_mode((500, 500))
+clock = pygame.time.Clock()
+running = True
+dt = 0
+velocity_y = 0
+velocity_x = 0
 
-def print_board(board):
-    os.system('clear')
-    for row in board:
-        print(row)
+player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
-def initialize_snake(board):
-    snake = [[3,3],[3,4]]
-    for segment in snake:
-        board[segment[0]][segment[1]] = 'S'
-    return snake
+while running:
+    # poll for events
+    # pygame.QUIT event means the user clicked X to close your window
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-def move_snake(snake):
+    # fill the screen with a color to wipe away anything from last frame
+    screen.fill("black")
 
-    return snake
+    pygame.draw.rect(screen, "green", (player_pos.x, player_pos.y, 20, 20))
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w]:
+        velocity_y = -300
+        velocity_x = 0
+        # player_pos.y -= 300 * dt
+    if keys[pygame.K_s]:
+        velocity_y = 300
+        velocity_x = 0
+        # player_pos.y += 300 * dt
+    if keys[pygame.K_a]:
+        velocity_x = -300
+        velocity_y = 0
+        # player_pos.x -= 300 * dt
+    if keys[pygame.K_d]:
+        velocity_x = 300
+        velocity_y = 0
+        # player_pos.x += 300 * dt
 
-def update_board(board,snake):
-    for segment in snake:
-        board[segment[0]][segment[1]] = 'S'
-    return board
+    player_pos.x += velocity_x * dt
+    player_pos.y += velocity_y * dt
 
 
-board = initialize_board()
-snake = initialize_snake(board)
+    # flip() the display to put your work on screen
+    pygame.display.flip()
 
-x=0
-while x<5:
-    new_snake = move_snake(snake)
-    update_board(board,new_snake)
-    print_board(board)
+    dt = clock.tick(60) / 2250
 
-
-
+pygame.quit()
